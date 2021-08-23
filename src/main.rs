@@ -7,12 +7,7 @@ fn main() {
 
     let arabic: Vec<&str> = arabic_file_contents.split('\n').collect();
     for ayah in arabic {
-        let ch = ayah.chars().next();
-        if ch == None {
-            break;
-        }
-
-        if ch.unwrap() == '#' || ch.unwrap().is_whitespace() {
+        if ayah.is_empty() || ayah.chars().nth(0).unwrap() == '#' {
             continue;
         }
         let (surah_num, ayah_num, ayah_arabic) = parsers::parse_ayah(ayah);
