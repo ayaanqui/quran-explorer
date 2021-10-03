@@ -6,7 +6,8 @@ import (
 
 func BuildPath(relative_path string) (string, error) {
 	path, err := os.Getwd()
-	return path, err
+	full_path := path + relative_path
+	return full_path, err
 }
 
 func GetResource(filename string) (string, error) {
