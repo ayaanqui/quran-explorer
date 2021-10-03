@@ -4,7 +4,9 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 
+	"github.com/ayaanqui/quran-explorer/src/types"
 	"github.com/ayaanqui/quran-explorer/src/util"
 )
 
@@ -20,9 +22,18 @@ func main() {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
+	arabic_ayahs := make([]types.Ayah, 7000)
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
-	}
+		line := scanner.Text()
+		if strings.Trim(line, " ") == "" {
+			break
+		}
 
-	fmt.Println("Finished!")
+		ch, v, sajdah, verse := util.ParseRawAyah(line)
+
+		fmt.Printf("%d:%d %s | Sajdah: %v\n", ch, v, verse, sajdah)
+		
+		ayah := util.BuildAyah(line)
+		arabic_ayahs = append(arabic_ayahs, *ayah)
+	}
 }
