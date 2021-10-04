@@ -26,16 +26,25 @@ func ParseRawAyah(raw_verse string) (uint, uint, bool, string) {
 		PanicMsg(err, "Could not covert verse number it uint: " + raw_verse + ": " + parsed_ayah[1])
 	}
 	verse_raw := parsed_ayah[2]
+	sajdah := false
 
-	return uint (chapter_number), uint (verse_number), false, verse_raw
+	if strings.Contains(verse_raw, "۩") {
+		verse_raw = verse_raw[0:len(verse_raw)-2]
+		sajdah = true
+	}
+
+	return uint (chapter_number), uint (verse_number), sajdah, verse_raw
 }
 
+// Expected verse format: 114|6|مِنَ الْجِنَّةِ وَالنَّاسِ [۩]
+// Order: chapter number, verse number, ayah/verse, and the symbol ۩ indicating a sajdah.
 func BuildAyah(raw_verse string) *types.Ayah {
 	ch_num, verse_num, sajdah, verse := ParseRawAyah(raw_verse)
-	return &types.Ayah{
+	ayah := types.Ayah{
 		VerseNumber: verse_num, 
 		ChapterNumber: ch_num, 
 		Sajdah: sajdah, 
 		Verse: verse,
 	}
+	return &ayah
 }

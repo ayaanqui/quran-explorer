@@ -22,18 +22,14 @@ func main() {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	arabic_ayahs := make([]types.Ayah, 7000)
+	ayahs := make([]types.Ayah, 7000)
 	for scanner.Scan() {
 		line := scanner.Text()
 		if strings.Trim(line, " ") == "" {
 			break
 		}
-
-		ch, v, sajdah, verse := util.ParseRawAyah(line)
-
-		fmt.Printf("%d:%d %s | Sajdah: %v\n", ch, v, verse, sajdah)
 		
 		ayah := util.BuildAyah(line)
-		arabic_ayahs = append(arabic_ayahs, *ayah)
+		ayahs = append(ayahs, *ayah)
 	}
 }
