@@ -55,7 +55,7 @@ func main() {
 // function populates the map with all the verses on each chapter.
 // Due to the nature of maps looking up any verse is O(1) constant-time lookup.
 func build_browsable_quran(chapter_map map[uint][]types.Ayah) {
-	const filename = "quran-simple.txt"
+	const filename = "quran-uthmani.txt"
 	filepath, err := util.GetResource(filename)
 	util.PanicMsg(err, "Could not build path for '" + filename + "'")
 	
