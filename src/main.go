@@ -10,40 +10,13 @@ import (
 	"github.com/ayaanqui/quran-explorer/src/types"
 	"github.com/ayaanqui/quran-explorer/src/util"
 )
-
-func build_browsable_quran(chapter_map map[uint][]types.Ayah) {
-	const filename = "quran-simple.txt"
-	filepath, err := util.GetResource(filename)
-	util.PanicMsg(err, "Could not build path for '" + filename + "'")
-	
-	file, err := os.Open(filepath)
-	util.PanicMsg(err, "Could not open '" + filepath + "'")
-	defer file.Close()
-	
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
-		if strings.Trim(line, " ") == "" {
-			break
-		}
-		
-		ayah := util.BuildAyah(line)
-		
-		chapter := ayah.ChapterNumber
-		u, v := chapter_map[chapter]
-		if v {
-			chapter_map[chapter] = append(u, *ayah)
-		} else {
-			ayah_arr := make([]types.Ayah, 3)
-			ayah_arr = append(ayah_arr, *ayah)
-			chapter_map[chapter] = ayah_arr
-		}
-	}	
-}
-
 	
 func main() {
-	// const VERSES = 6236
+	// Qur'an facts
+	// TOTAL VERSES: 6,236
+	// TOTAL CHAPTERS: 114
+	// TOTAL SAJDAHS: 15
+
 	const CHAPTERS = 114
 
 	chapter_map := make(map[uint][]types.Ayah, CHAPTERS)
@@ -75,5 +48,38 @@ func main() {
 			fmt.Println("Invalid chapter number")
 		}
 		fmt.Println()
+	}
+}
+
+// Given a map of uint -> []Ayah (chapter -> list of ayahs), this
+// function populates the map with all the verses on each chapter.
+// Due to the nature of maps looking up any verse is O(1) constant-time lookup.
+func build_browsable_quran(chapter_map map[uint][]types.Ayah) {
+	const filename = "quran-simple.txt"
+	filepath, err := util.GetResource(filename)
+	util.PanicMsg(err, "Could not build path for '" + filename + "'")
+	
+	file, err := os.Open(filepath)
+	util.PanicMsg(err, "Could not open '" + filepath + "'")
+	defer file.Close()
+	
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.Trim(line, " ") == "" {
+			break
+		}
+		
+		ayah := util.BuildAyah(line)
+		
+		chapter := ayah.ChapterNumber
+		u, v := chapter_map[chapter]
+		if v {
+			chapter_map[chapter] = append(u, *ayah)
+		} else {
+			ayah_arr := make([]types.Ayah, 3)
+			ayah_arr = append(ayah_arr, *ayah)
+			chapter_map[chapter] = ayah_arr
+		}
 	}
 }
