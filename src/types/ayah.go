@@ -15,7 +15,7 @@ type IAyah interface {
 	ToString() string
 }
 
-func (a Ayah) ToString() string {
+func (a *Ayah) ToString() string {
 	res := fmt.Sprintf("%d:%d %s", a.ChapterNumber, a.VerseNumber, a.Verse)
 	if a.Sajdah {
 		return res + " Sajdah"

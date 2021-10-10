@@ -13,14 +13,14 @@ import (
 	
 func main() {
 	// Qur'an facts
-	// TOTAL VERSES: 6,236
+	// TOTAL VERSES/AYAHS: 6,236
 	// TOTAL CHAPTERS: 114
 	// TOTAL SAJDAHS: 15
 
 	const CHAPTERS = 114
 
-	chapter_map := make(map[uint][]types.Ayah, CHAPTERS)
-	build_browsable_quran(chapter_map)
+	chapter_to_ayah := make(map[uint][]types.Ayah, CHAPTERS)
+	build_browsable_quran(chapter_to_ayah)
 
 	fmt.Printf("Welcome to the Qur'an Explorer\n\n")
 		
@@ -39,7 +39,7 @@ func main() {
 			fmt.Println("Handle non integer input")
 		}
 
-		ch_ayahs, found := chapter_map[uint (ch)]
+		ch_ayahs, found := chapter_to_ayah[uint (ch)]
 		if found {
 			for _, a := range ch_ayahs {
 				fmt.Printf("%d:%d %s\n", a.ChapterNumber, a.VerseNumber, a.Verse)
@@ -54,7 +54,7 @@ func main() {
 // Given a map of uint -> []Ayah (chapter -> list of ayahs), this
 // function populates the map with all the verses on each chapter.
 // Due to the nature of maps looking up any verse is O(1) constant-time lookup.
-func build_browsable_quran(chapter_map map[uint][]types.Ayah) {
+func build_browsable_quran(chapter_to_ayah map[uint][]types.Ayah) {
 	const filename = "quran-uthmani.txt"
 	filepath, err := util.GetResource(filename)
 	util.PanicMsg(err, "Could not build path for '" + filename + "'")
@@ -73,13 +73,13 @@ func build_browsable_quran(chapter_map map[uint][]types.Ayah) {
 		ayah := util.BuildAyah(line)
 		
 		chapter := ayah.ChapterNumber
-		u, v := chapter_map[chapter]
+		u, v := chapter_to_ayah[chapter]
 		if v {
-			chapter_map[chapter] = append(u, *ayah)
+			chapter_to_ayah[chapter] = append(u, *ayah)
 		} else {
 			ayah_arr := make([]types.Ayah, 3)
 			ayah_arr = append(ayah_arr, *ayah)
-			chapter_map[chapter] = ayah_arr
+			chapter_to_ayah[chapter] = ayah_arr
 		}
 	}
 }
