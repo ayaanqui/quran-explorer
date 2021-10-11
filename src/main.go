@@ -22,10 +22,12 @@ func main() {
 	chapter_to_ayah := make(map[uint][]types.Ayah, CHAPTERS)
 	build_browsable_quran(chapter_to_ayah)
 
+	surahs := build_surahs()
+
 	fmt.Printf("Welcome to the Qur'an Explorer\n\n")
 		
 	for {
-		fmt.Println("Enter command: ")
+		fmt.Print("Enter command: ")
 		var input string
 		fmt.Scanln(&input)
 			
@@ -33,7 +35,7 @@ func main() {
 			break
 		}
 
-		ch, err := strconv.Atoi(input)
+		ch, err := strconv.ParseUint(input, 10, 32)
 		if err != nil {
 			// TODO: Handle non integer input
 			fmt.Println("Handle non integer input")
@@ -41,6 +43,7 @@ func main() {
 
 		ch_ayahs, found := chapter_to_ayah[uint (ch)]
 		if found {
+			fmt.Println(surahs[uint (ch)].GetName())
 			for _, a := range ch_ayahs {
 				fmt.Printf("%d:%d %s\n", a.ChapterNumber, a.VerseNumber, a.Verse)
 			}
@@ -82,4 +85,29 @@ func build_browsable_quran(chapter_to_ayah map[uint][]types.Ayah) {
 			chapter_to_ayah[chapter] = ayah_arr
 		}
 	}
+}
+
+func build_surahs() map[uint]*types.Surah {
+	filename := "surah-names-english.txt"
+	filepath, err := util.GetResource(filename)
+	if err != nil {
+		panic("Could not build path for: " + filename)
+	}
+
+	file, err := os.Open(filepath)
+	if err != nil {
+		panic("Could not open surahs file: " + filepath)
+	}
+
+	scanner := bufio.NewScanner(file)
+	surahs := make(map[uint]*types.Surah, 114)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.Trim(line, " ") == "" {
+			break
+		}
+		surah := util.BuildSurah(line)
+		surahs[surah.ChapterNumber] = surah
+	}
+	return surahs
 }
