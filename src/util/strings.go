@@ -10,6 +10,8 @@ func BuildPath(relative_path string) (string, error) {
 	return full_path, err
 }
 
+// Returns full path for a given filename.
+// Assumes the file destination to be in the res folder of the project root
 func GetResource(filename string) (string, error) {
 	return BuildPath("/res/" + filename)
 }
