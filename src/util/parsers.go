@@ -48,3 +48,24 @@ func BuildAyah(raw_verse string) *types.Ayah {
 	}
 	return &ayah
 }
+
+// Expected line format: 15|Hijr|Al|. 
+// With the order: chapter number, surah name, surah prefix (can be empty. Ex. 11|Hud||)
+func BuildSurah(line string) *types.Surah {
+	parsed_line := strings.Split(line, "|")
+	if len(parsed_line) < 3 {
+		panic("Could not parse surah line: " + line)
+	}
+
+	ch_number, err := strconv.ParseUint(parsed_line[0], 10, 32)
+	if err != nil {
+		panic("Could not convert string to number: " + parsed_line[0])
+	}
+
+	surah := types.Surah {
+		ChapterNumber: uint (ch_number),
+		Name: parsed_line[1],
+		Prefix: parsed_line[2],
+	}
+	return &surah
+}
