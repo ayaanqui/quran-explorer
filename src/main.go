@@ -80,7 +80,7 @@ func build_browsable_quran(chapter_to_ayah map[uint][]types.Ayah) {
 		if v {
 			chapter_to_ayah[chapter] = append(u, *ayah)
 		} else {
-			ayah_arr := make([]types.Ayah, 3)
+			ayah_arr := make([]types.Ayah, 0, 3)
 			ayah_arr = append(ayah_arr, *ayah)
 			chapter_to_ayah[chapter] = ayah_arr
 		}
