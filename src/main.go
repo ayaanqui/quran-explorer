@@ -50,3 +50,18 @@ func main() {
 		fmt.Println()
 	}
 }
+
+// Prints all verses in the ayahs array. 
+// Range is as following: [from, to) from is inclusive, and to is exclusive
+func PrintVerses(surah *types.Surah, ayahs *[]*types.Ayah, from int, to int) {
+	fmt.Println(surah.GetName())
+
+	for index, ayah := range *ayahs {
+		if (index < from) {
+			continue
+		} else if (index >= to) {
+			break
+		}
+		fmt.Printf("%d:%d %s\n", ayah.ChapterNumber, ayah.VerseNumber, ayah.Verse)
+	}
+}
