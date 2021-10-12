@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/ayaanqui/quran-explorer/src/types"
 	"github.com/ayaanqui/quran-explorer/src/util"
@@ -34,19 +35,27 @@ func main() {
 
 		ch, err := strconv.ParseUint(input, 10, 32)
 		if err != nil {
-			// TODO: Handle non integer input
-			fmt.Println("Handle non integer input")
-		}
-
-		ch_ayahs, found := chapter_to_ayah[uint (ch)]
-		if found {
-			fmt.Println(surahs[uint (ch)].GetName())
-			for _, a := range ch_ayahs {
-				fmt.Printf("%d:%d %s\n", a.ChapterNumber, a.VerseNumber, a.Verse)
+			// String input
+			for ch, surah := range surahs {
+				if strings.Contains(input, surah.Name) {
+					ayahs, found := chapter_to_ayah[ch]
+					if !found {
+						fmt.Println("There was an error. Please try another command")
+						continue
+					}
+					PrintVerses(surah, &ayahs, 0, len(ayahs))
+				}
 			}
 		} else {
-			fmt.Println("Invalid chapter number")
+			// Numeric input (i.e. chapter number)
+			ch_ayahs, found := chapter_to_ayah[uint (ch)]
+			if found {
+				PrintVerses(surahs[uint (ch)], &ch_ayahs, 0, len(ch_ayahs))
+			} else {
+				fmt.Println("Invalid chapter number")
+			}
 		}
+
 		fmt.Println()
 	}
 }
