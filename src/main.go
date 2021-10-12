@@ -28,7 +28,7 @@ func main() {
 		fmt.Print("Enter command: ")
 		var input string
 		fmt.Scanln(&input)
-			
+		
 		if input == "q" {
 			break
 		}
@@ -37,7 +37,7 @@ func main() {
 		if err != nil {
 			// String input
 			for ch, surah := range surahs {
-				if strings.Contains(input, surah.Name) {
+				if strings.Contains(strings.ToLower(input), surah.NameLower()) {
 					ayahs, found := chapter_to_ayah[ch]
 					if !found {
 						fmt.Println("There was an error. Please try another command")

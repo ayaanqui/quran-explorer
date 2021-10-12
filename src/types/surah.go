@@ -1,6 +1,9 @@
 package types
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type Surah struct {
 	ChapterNumber uint
@@ -17,4 +20,8 @@ func (s *Surah) GetName() string {
 		return fmt.Sprintf("Surat %s", s.Name)
 	}
 	return fmt.Sprintf("Surat %s-%s", s.Prefix, s.Name)
+}
+
+func (s *Surah) NameLower() string {
+	return strings.ToLower(s.Name)
 }
