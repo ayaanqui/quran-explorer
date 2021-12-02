@@ -8,7 +8,7 @@ import (
 	"github.com/ayaanqui/quran-explorer/src/types"
 	"github.com/ayaanqui/quran-explorer/src/util"
 )
-	
+
 func main() {
 	// Qur'an facts
 	// TOTAL VERSES/AYAHS: 6,236
