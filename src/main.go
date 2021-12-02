@@ -30,7 +30,7 @@ func main() {
 		var input string
 		fmt.Scanln(&input)
 		
-		if input == "q" {
+		if input == "q" || input == "quit" || input == "exit" {
 			break
 		}
 
@@ -61,72 +61,72 @@ func handle_non_numeric_input(input string, chapter_to_ayah map[uint][]*types.Ay
 		if len(parsed_input) < 2 {
 			fmt.Println("Input should be of type chapter:verse or chapter:verse_start-verse_end")
 			return
-				}
+		}
 
-				ch, err := strconv.ParseUint(parsed_input[0], 10, 32)
-				if err != nil {
-					fmt.Println("Chapter argument should be a numeric value")
+		ch, err := strconv.ParseUint(parsed_input[0], 10, 32)
+		if err != nil {
+			fmt.Println("Chapter argument should be a numeric value")
 			return
-				}
-				var chapter_number uint = uint (ch)
+		}
+		var chapter_number uint = uint (ch)
 
-				// Fetch ayahs and surah information
-				ch_ayahs, found := chapter_to_ayah[chapter_number]
-				if !found {
-					fmt.Printf("Could not find the chapter: %d\n", chapter_number)
+		// Fetch ayahs and surah information
+		ch_ayahs, found := chapter_to_ayah[chapter_number]
+		if !found {
+			fmt.Printf("Could not find the chapter: %d\n", chapter_number)
 			return
-				}
-				surah_details := surahs[chapter_number]
+		}
+		surah_details := surahs[chapter_number]
 
-				// Parse verse number(s)
-				verse_side := strings.Split(parsed_input[1], " ")
-				parsed_verse_args := strings.Split(verse_side[0], "-")
-				var start_verse, end_verse uint
+		// Parse verse number(s)
+		verse_side := strings.Split(parsed_input[1], " ")
+		parsed_verse_args := strings.Split(verse_side[0], "-")
+		var start_verse, end_verse uint
 
-				val, err := strconv.ParseUint(parsed_verse_args[0], 10, 32)
-				if err != nil {
-					fmt.Println("Start verse number has to be a number")
+		val, err := strconv.ParseUint(parsed_verse_args[0], 10, 32)
+		if err != nil {
+			fmt.Println("Start verse number has to be a number")
 			return
-				}
-				start_verse = uint (val)
-				
-				if len(parsed_verse_args) > 1 {
-					val, err := strconv.ParseUint(parsed_verse_args[1], 10, 32)
-					if err != nil {
-						fmt.Println("End verse number has to be a number")
+		}
+		start_verse = uint (val)
+		
+		if len(parsed_verse_args) > 1 {
+			val, err := strconv.ParseUint(parsed_verse_args[1], 10, 32)
+			if err != nil {
+				fmt.Println("End verse number has to be a number")
 				return
-					}
-					end_verse = uint (val)
-				}
-
-				if int(start_verse) > len(ch_ayahs) {
-					fmt.Println("Start ayah out of bounds")
-			return
-				}
-
-				if end_verse == 0 {
-					// Only start verse was provided so return a single verse for the chapter
-					PrintVerses(surah_details, &ch_ayahs, int(start_verse-1), int(start_verse))
-			return
-				} else {
-					if end_verse < start_verse {
-						fmt.Println("End verse cannot be less than start verse")
-				return
-					}
-					PrintVerses(surah_details, &ch_ayahs, int(start_verse-1), int(end_verse))
-			return
-				}
 			}
+			end_verse = uint (val)
+		}
 
-			// String input
-			for ch, surah := range surahs {
-				if strings.Contains(strings.ToLower(input), surah.NameLower()) {
-					ayahs, found := chapter_to_ayah[ch]
-					if !found {
-						fmt.Println("There was an error. Please try another command")
+		if int(start_verse) > len(ch_ayahs) {
+			fmt.Println("Start ayah out of bounds")
+			return
+		}
+
+		if end_verse == 0 {
+			// Only start verse was provided so return a single verse for the chapter
+			PrintVerses(surah_details, &ch_ayahs, int(start_verse-1), int(start_verse))
+			return
+		} else {
+			if end_verse < start_verse {
+				fmt.Println("End verse cannot be less than start verse")
 				return
-					}
-					PrintVerses(surah, &ayahs, 0, len(ayahs))
+			}
+			PrintVerses(surah_details, &ch_ayahs, int(start_verse-1), int(end_verse))
+			return
+		}
+	}
+
+	// String input
+	for ch, surah := range surahs {
+		if strings.Contains(strings.ToLower(input), surah.NameLower()) {
+			ayahs, found := chapter_to_ayah[ch]
+			if !found {
+				fmt.Println("There was an error. Please try another command")
+				return
+			}
+			PrintVerses(surah, &ayahs, 0, len(ayahs))
 		}
 	}
 }
